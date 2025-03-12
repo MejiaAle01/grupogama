@@ -2,19 +2,17 @@
 
 namespace App\Models;
 
-//use Illuminate\Contracts\Auth\MustVerifyEmail;
+// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Relations\HasOne;
-use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-//use Filament\Models\Contracts\FilamentUser;
-//use Filament\Panel;
+/* use Filament\Models\Contracts\FilamentUser;
+use Filament\Panel; */
+use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable //implements FilamentUser
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable, SoftDeletes;
+    use HasFactory, Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -23,16 +21,9 @@ class User extends Authenticatable //implements FilamentUser
      */
     protected $fillable = [
         'name',
-        'apellidos',
-        'codigo',
-        'proyecto',
-        'cargo',
         'email',
         'password',
-        'pais'
     ];
-
-    protected $primaryKey = 'id';
 
     /**
      * The attributes that should be hidden for serialization.
@@ -57,20 +48,12 @@ class User extends Authenticatable //implements FilamentUser
         ];
     }
 
-    public function horasExtras(): HasOne {
-        return $this->hasOne(HorasExtras::class);
-    }
-
-    public function personal(): HasOne {
-        return $this->hasOne(Personal::class);
-    }
-
     /* public function canAccessPanel(Panel $panel): bool
     {
-        if ($panel->getId() === 'dashboard') {
+        if ($panel->getId() === 'admin') {
             return str_ends_with($this->email, '@example.com') && $this->hasVerifiedEmail();
         }
-
+ 
         return true;
     } */
 }

@@ -18,4 +18,8 @@ class EditUser extends EditRecord
             Actions\RestoreAction::make(),
         ];
     }
+
+    protected function getSavedNotificationTitle(): ?string {
+        return 'User updated';
+    }
 }

@@ -3,19 +3,16 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\UserResource\Pages;
-//use App\Filament\Resources\UserResource\RelationManagers;
+use App\Filament\Resources\UserResource\RelationManagers;
 use App\Models\User;
-//use Coolsam\SignaturePad\Forms\Components\Fields\SignaturePad;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-/* use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope; */
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Forms\Components\Section;
-/* use Saade\FilamentAutograph\Forms\Components\Enums\DownloadableFormat;
-use Saade\FilamentAutograph\Forms\Components\SignaturePad; */
 use Filament\Forms\Components\TextInput;
 
 class UserResource extends Resource
@@ -23,9 +20,12 @@ class UserResource extends Resource
     protected static ?string $model = User::class;
     protected static ?string $pluralModelLabel = 'Empleados';
     protected static ?string $navigationLabel = 'Empleados';
-    protected static ?string $modelLabel = 'Emepleado';
-
+    protected static ?string $modelLabel = 'Empleado';
     protected static ?string $navigationIcon = 'heroicon-o-user';
+
+    public static function getNavigationBadge(): ?string {
+        return static::getModel()::count();
+    }
 
     public static function form(Form $form): Form
     {
@@ -58,58 +58,45 @@ class UserResource extends Resource
                     ->required()
                     ->label('País'),
                 ]),
-                /* Section::make('Firmas Digitales')
-                ->schema([
-                    //SignaturePad::make('firma')
-                    SignaturePad::make('signature')
-                    ->filename('autograph')
-                    ->downloadable()
-                    ->downloadableFormats([
-                        DownloadableFormat::PNG,
-                        DownloadableFormat::JPG,
-                    ])
-                    ->downloadActionDropdownPlacement('center-end')
-                    ->confirmable()
-                ]) */
             ]);
     }
 
     public static function table(Table $table): Table
     {
         return $table
-            ->columns([
-                Tables\Columns\TextColumn::make('name')
-                    ->searchable()
-                    ->label('Nombre'),
-                Tables\Columns\TextColumn::make('apellidos')
-                    ->searchable()
-                    ->label('Apellidos'),
-                Tables\Columns\TextColumn::make('email')
-                    ->searchable()
-                    ->label('Correo'),
-                Tables\Columns\TextColumn::make('codigo')
-                    ->searchable()
-                    ->label('Código'),
-                Tables\Columns\TextColumn::make('cargo')
-                    ->searchable()
-                    ->label('Cargo'),
-                Tables\Columns\TextColumn::make('proyecto')
-                    ->searchable()
-                    ->label('Departamento / Proyecto'),
-                Tables\Columns\TextColumn::make('email')
-                    ->searchable()
-                    ->label('Correo'),
-                Tables\Columns\TextColumn::make('created_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('updated_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-            ])
+        ->columns([
+            Tables\Columns\TextColumn::make('name')
+                ->searchable()
+                ->label('Nombre'),
+            Tables\Columns\TextColumn::make('apellidos')
+                ->searchable()
+                ->label('Apellidos'),
+            Tables\Columns\TextColumn::make('email')
+                ->searchable()
+                ->label('Correo'),
+            Tables\Columns\TextColumn::make('codigo')
+                ->searchable()
+                ->label('Código'),
+            Tables\Columns\TextColumn::make('cargo')
+                ->searchable()
+                ->label('Cargo'),
+            Tables\Columns\TextColumn::make('proyecto')
+                ->searchable()
+                ->label('Departamento / Proyecto'),
+            Tables\Columns\TextColumn::make('email')
+                ->searchable()
+                ->label('Correo'),
+            Tables\Columns\TextColumn::make('created_at')
+                ->dateTime()
+                ->sortable()
+                ->toggleable(isToggledHiddenByDefault: true),
+            Tables\Columns\TextColumn::make('updated_at')
+                ->dateTime()
+                ->sortable()
+                ->toggleable(isToggledHiddenByDefault: true),
+        ])
             ->filters([
-                //
+                //Tables\Filters\TrashedFilter::make(),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
@@ -140,5 +127,12 @@ class UserResource extends Resource
             'create' => Pages\CreateUser::route('/create'),
             'edit' => Pages\EditUser::route('/{record}/edit'),
         ];
+    }
+
+    public static function getEloquentQuery(): Builder {
+        return parent::getEloquentQuery()
+        ->withoutGlobalScopes([
+            SoftDeletingScope::class,
+        ]);
     }
 }
